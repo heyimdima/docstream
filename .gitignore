@@ -1,0 +1,33 @@
+# Node.js dependencies
+node_modules/
+.next/
+.turbo/
+
+# Python virtual environments and cache
+__pycache__/
+.pytest_cache/
+.venv/
+.env
+
+# Poetry
+.poetry/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build outputs
+dist/
+build/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS specific
+.DS_Store
