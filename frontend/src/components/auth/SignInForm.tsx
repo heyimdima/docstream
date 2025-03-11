@@ -106,6 +106,17 @@ export function SignInForm() {
           <Link href="sign-up" className="underline underline-offset-4">Sign Up</Link>
         </div>
         
+        <div className="text-xs text-muted-foreground">
+          By signing in, you agree to our{" "}
+          <Link href="/policies/terms-of-service" className="underline underline-offset-4 hover:text-primary">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link href="/policies/privacy-policy" className="underline underline-offset-4 hover:text-primary">
+            Privacy Policy
+          </Link>
+        </div>
+        
       </CardContent>
     </Card>
   );
