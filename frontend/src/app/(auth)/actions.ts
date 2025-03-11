@@ -52,3 +52,65 @@ export async function logout() {
   revalidatePath('/', 'layout')
   redirect('/')
 }
+
+export async function loginWithGithub() {
+  const supabase = await createClient()
+  
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`
+    }
+  })
+  
+  if (error) {
+    console.error('GitHub login error:', error)
+    redirect('/error')
+  }
+  
+  // This will redirect the user to GitHub's authorization page
+  if (data?.url) {
+    redirect(data.url)
+  }
+}
+
+export async function loginWithGoogle() {
+  const supabase = await createClient()
+  
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`
+    }
+  })
+  
+  if (error) {
+    console.error('Google login error:', error)
+    redirect('/error')
+  }
+  
+  if (data?.url) {
+    redirect(data.url)
+  }
+}
+
+export async function loginWithX() {
+  const supabase = await createClient()
+  
+  // Note: X (Twitter) auth may require additional setup in Supabase
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'twitter',
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`
+    }
+  })
+  
+  if (error) {
+    console.error('X/Twitter login error:', error)
+    redirect('/error')
+  }
+  
+  if (data?.url) {
+    redirect(data.url)
+  }
+}
