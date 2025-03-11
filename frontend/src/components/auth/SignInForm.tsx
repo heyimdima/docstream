@@ -54,7 +54,7 @@ export function SignInForm() {
   }
 
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Welcome back</CardTitle>
         <CardDescription>Enter your email below to login to your account</CardDescription>
@@ -106,7 +106,7 @@ export function SignInForm() {
           <Link href="sign-up" className="underline underline-offset-4">Sign Up</Link>
         </div>
         
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-muted-foreground text-center">
           By signing in, you agree to our{" "}
           <Link href="/policies/terms-of-service" className="underline underline-offset-4 hover:text-primary">
             Terms of Service
