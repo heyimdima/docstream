@@ -2,10 +2,7 @@ from fastapi import FastAPI
 
 app = FastAPI(title="Backend API")
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"item_id": item_id}
+@app.post("/stream_chat_response")
+async def stream_response():
+    return {"message": "Hello World"}
