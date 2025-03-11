@@ -31,7 +31,7 @@ poetry run uvicorn src.backend.main:app --reload
 
 The server will start at http://127.0.0.1:8000/ with auto-reload enabled.
 
-### 5. Access API documentation
+### 4. Access API documentation
 
 - Swagger UI: http://127.0.0.1:8000/docs
 - ReDoc: http://127.0.0.1:8000/redoc
