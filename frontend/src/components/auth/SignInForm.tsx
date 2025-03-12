@@ -102,7 +102,7 @@ export function SignInForm() {
         <SocialLoginButtons />
 
         <div className="text-center text-sm">
-          Don&apos;t have an account?{" "}
+          <span className="text-muted-foreground">Don&apos;t have an account?{" "}</span>
           <Link href="sign-up" className="underline underline-offset-4">Sign Up</Link>
         </div>
         

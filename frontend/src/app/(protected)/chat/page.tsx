@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { logout } from '@/app/(auth)/actions'
 
 
+
 export default async function PrivatePage() {
   const supabase = await createClient()
 
@@ -17,7 +18,6 @@ export default async function PrivatePage() {
     <div>
       <h1>Chat</h1>
       <p>Welcome, {data.user.email}!</p>
-
       <form action={logout}>
       <Button type='submit'>Logout</Button>
       </form>
