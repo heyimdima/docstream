@@ -20,9 +20,16 @@ eval $(poetry env activate)
 poetry install
 ```
 
+### 3. Install Jupyter kernel (optional for debugging)
+
+```bash
+pip install ipykernel
+python3 -m ipykernel install --user
+```
+
 This will install all required dependencies in the activated virtual environment.
 
-### 3. Run the server
+### 4. Run the server
 
 ```bash
 # Run the server using Poetry
@@ -35,4 +42,3 @@ The server will start at http://127.0.0.1:8000/ with auto-reload enabled.
 
 - Swagger UI: http://127.0.0.1:8000/docs
 - ReDoc: http://127.0.0.1:8000/redoc
-
