@@ -1,44 +1,21 @@
-# FastAPI Backend
+1. Install Poetry
 
-This is a FastAPI-based backend service built with Poetry for dependency management.
-
-## Getting Started
-
-Follow these steps to set up and run the backend server locally in the correct order:
-
-
-### 1. Activate the virtual environment
-
+2. Create a virtual environment
 ```bash
-# Activate the Poetry environment
+poetry env use python3.11
+```
+
+3. Activate the virtual environment
+```
 eval $(poetry env activate)
 ```
 
-### 2. Install dependencies
-
-```bash
+4. Install dependencies
+```
 poetry install
 ```
 
-### 3. Install Jupyter kernel (optional for debugging)
-
-```bash
-pip install ipykernel
-python3 -m ipykernel install --user
+5. Run the backend server (inside the backend directory)
 ```
-
-This will install all required dependencies in the activated virtual environment.
-
-### 4. Run the server
-
-```bash
-# Run the server using Poetry
 poetry run uvicorn src.backend.main:app --reload
 ```
-
-The server will start at http://127.0.0.1:8000/ with auto-reload enabled.
-
-### Access API documentation
-
-- Swagger UI: http://127.0.0.1:8000/docs
-- ReDoc: http://127.0.0.1:8000/redoc
