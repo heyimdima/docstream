@@ -29,7 +29,6 @@ crawl4ai-doctor
 poetry run uvicorn src.backend.main:app --reload
 ```
 
-
 ## Production Deployment (needs to be adjusted later)
 1. Install (for production deployment)
 ```bash
@@ -48,5 +47,5 @@ crawl4ai-doctor
 
 4. Run the backend server
 ```bash
-poetry run uvicorn src.backend.main:app --reload
+poetry runuvicorn src.backend.main:app --host 0.0.0.0 --port 8080 --workers 4
 ```
