@@ -3,7 +3,7 @@ import asyncio
 from crawl4ai import AsyncWebCrawler
 from crawl4ai.async_configs import BrowserConfig, CrawlerRunConfig, CacheMode
 from bs4 import BeautifulSoup
-from backend.models.indexing.models import CleanHTMLDocument
+from backend.models.indexing.models import HTMLDocument
 
 def html_filter(html: str):
     soup = BeautifulSoup(html, 'lxml')
@@ -23,9 +23,9 @@ scrape_results = []
 
 async def process_result(result):
     if result.success:
-        scrape_result = CleanHTMLDocument(
+        scrape_result = HTMLDocument(
             source_url=result.url,
-            clean_html=html_filter(result.cleaned_html)
+            html=html_filter(result.cleaned_html)
         )
         scrape_results.append(scrape_result)
     else:
