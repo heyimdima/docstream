@@ -3,24 +3,41 @@ import asyncio
 from crawl4ai import AsyncWebCrawler
 from crawl4ai.async_configs import BrowserConfig, CrawlerRunConfig, CacheMode
 from pydantic import BaseModel
-from backend.helpers.tokenizer import count_tokens
-from backend.helpers.html_filter import safe_html_filter
+from bs4 import BeautifulSoup
+
+def html_filter(html: str):
+    soup = BeautifulSoup(html, 'lxml')
+    article = soup.article.extract()
+
+    # Remove common elements that provide no semantic value
+    for element in soup.find_all(['nav', 'header', 'footer', 'script', 'style', 'meta', 'link', 'noscript', 'iframe', 'svg', 'img']):
+        element.decompose()
+
+    if article:
+        return str(article.prettify())
+    else:
+        print("[WARNING]: -> No <article> tag found, returning HTML with basic filter.")
+        return str(soup.prettify())
 
 class ScrapeResult(BaseModel):
     source_url: str
-    cleaned_html: str
+    clean_html: str
 
 scrape_results = []
 
 async def process_result(result):
     if result.success:
-        scrape_result = ScrapeResult(source_url=result.url, cleaned_html=result.cleaned_html)
+        scrape_result = ScrapeResult(
+            source_url=result.url,
+            clean_html=html_filter(result.cleaned_html)
+        )
         scrape_results.append(scrape_result)
     else:
-        print(f"!!! Error crawling {result.url}: {result.error}")
+        print(f"[CRAWL FAIL FOR]: -> {result.url}]")
+        print(f"[ERROR MESSAGE] : -> {result.error}")
 
 
-async def crawl_batch_parallel(urls, max_concurrent=3):
+async def crawl_batch_parallel(urls, max_concurrent=2):
     browser_config = BrowserConfig(
         headless=True,
         verbose=True,
@@ -77,14 +94,3 @@ urls = [
     "https://supabase.com/docs/guides/database/postgres/row-level-security"
 ]
 asyncio.create_task(crawl_batch_parallel(urls, max_concurrent=2))
-
-# %% Scraped Results Summary
-print(f"\n[Scrape Results] → {len(scrape_results)} pages scraped:")
-for page in scrape_results:
-    print(f"→ [CLEANED HTML] TOKENS: [{count_tokens(page.cleaned_html)}] | [{page.source_url}]")
-
-# %% HTML Page from Crawl4AI
-print(scrape_results[3].cleaned_html)
-
-# %% HTML Page after Safe Filtering with bs4
-print(safe_html_filter(scrape_results[3].cleaned_html))
