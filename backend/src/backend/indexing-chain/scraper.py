@@ -87,25 +87,28 @@ urls = [
     "https://supabase.com/docs/guides/auth/auth-email-passwordless",
     "https://supabase.com/docs/guides/database/postgres/cascade-deletes",
     "https://supabase.com/docs/guides/database/functions",
-    "https://supabase.com/docs/guides/database/postgres/row-level-security"
+    "https://supabase.com/docs/guides/database/postgres/row-level-security",
+    "https://python.langchain.com/docs/tutorials/chatbot/"
 ]
 asyncio.create_task(crawl_batch_parallel(urls, max_concurrent=2))
 
 
-# %%
-test_html_document = scrape_results[4]
+# # %%
+# test_html_document = scrape_results[5]
 
-# %%
-from converter import convert_html_to_markdown
-test_converted_markdown = convert_html_to_markdown(test_html_document)
+# # %%
+# from converter import convert_html_to_markdown
+# test_converted_markdown = convert_html_to_markdown(test_html_document)
 
-# %%
-from splitter import split_markdown_document_by_headers
-split_document = split_markdown_document_by_headers(test_converted_markdown)
+# # %%
+# from splitter import split_markdown_document_by_headers
+# split_document = split_markdown_document_by_headers(test_converted_markdown)
 
-for chunk in split_document.chunks:
-    print(f"CHUNK: [{chunk.chunk}]")
-    print(f"{chunk.markdown}")
-    print("-----------------------------------------------SPLIT-------------------------------------------------------")
-    print()
-    print()
+# from backend.helpers.tokenizer import count_tokens
+
+# for chunk in split_document.chunks:
+#     print(f"CHUNK: [{chunk.chunk}] | TOKENS: [{count_tokens(chunk.markdown)}]")
+#     print(f"{chunk.markdown}")
+#     print("-----------------------------------------------SPLIT-------------------------------------------------------")
+#     print()
+#     print()
