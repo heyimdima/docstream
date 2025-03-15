@@ -2,8 +2,8 @@
 import asyncio
 from crawl4ai import AsyncWebCrawler
 from crawl4ai.async_configs import BrowserConfig, CrawlerRunConfig, CacheMode
-from pydantic import BaseModel
 from bs4 import BeautifulSoup
+from backend.models.indexing.models import CleanHTMLDocument
 
 def html_filter(html: str):
     soup = BeautifulSoup(html, 'lxml')
@@ -19,15 +19,11 @@ def html_filter(html: str):
         print("[WARNING]: -> No <article> tag found, returning HTML with basic filter.")
         return str(soup.prettify())
 
-class ScrapeResult(BaseModel):
-    source_url: str
-    clean_html: str
-
 scrape_results = []
 
 async def process_result(result):
     if result.success:
-        scrape_result = ScrapeResult(
+        scrape_result = CleanHTMLDocument(
             source_url=result.url,
             clean_html=html_filter(result.cleaned_html)
         )
@@ -80,7 +76,7 @@ async def crawl_batch_parallel(urls, max_concurrent=2):
                 else:
                     fail_count += 1
 
-        print(f"\n[SUMMARY] → SUCCESS: [{success_count}] | FAIL: [{fail_count}]")
+        print(f"\n[SCRAPER SUMMARY] → SUCCESS: [{success_count}] | FAIL: [{fail_count}]")
 
     finally:
         print("[CLOSING CRAWLER]")

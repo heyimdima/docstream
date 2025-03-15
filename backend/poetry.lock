@@ -1009,6 +1009,21 @@ files = [
 ]
 
 [[package]]
+name = "html-to-markdown"
+version = "1.2.0"
+description = "Convert HTML to markdown"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "html_to_markdown-1.2.0-py3-none-any.whl", hash = "sha256:76f9bce8ddc291bdb8e20dcb926cbbc638c8aa5c42f49d419bd13900790ccaa3"},
+    {file = "html_to_markdown-1.2.0.tar.gz", hash = "sha256:a74dc8265b5a0ae0f07b736d96f0fd8f97147395fc0570ea7b24fadf7c460e54"},
+]
+
+[package.dependencies]
+beautifulsoup4 = ">=4.12.3"
+
+[[package]]
 name = "httpcore"
 version = "1.0.7"
 description = "A minimal low-level HTTP client."
@@ -3603,4 +3618,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "3.11.*"
-content-hash = "9a7ddb214ab6e17ac04a9052fed19628ee3bde994a4a36aaf035e128e3db4bbd"
+content-hash = "2bfca07b6050428a3700832b240f41b6a4a1159ddcba57e88d78fbd6e642eb42"
