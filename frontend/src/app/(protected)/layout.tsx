@@ -1,14 +1,21 @@
-// app/(auth)/layout.tsx
-import React from "react";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { ChatHeader } from "@/components/chat/sidebar/chat-header";
+import { ChatSidebar } from "@/components/chat/sidebar/chat-sidebar";
 
-export default function ProtectedLayout({
+export default function ChatLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-md">{children}</div>
-    </div>
+    <SidebarProvider>
+      <ChatSidebar />
+      <SidebarInset>
+        <ChatHeader />
+        <div className="flex flex-col items-center justify-center flex-1 w-full max-w-4xl mx-auto px-4">
+          {children}
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

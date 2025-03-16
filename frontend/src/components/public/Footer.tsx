@@ -11,18 +11,14 @@ export function Footer() {
         </p>
         <div className="flex items-center space-x-4">
           <Link
-            href="https://github.com/yourusername"
-            target="_blank"
-            rel="noreferrer"
+            href="https://github.com"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <Github className="h-5 w-5" />
             <span className="sr-only">GitHub</span>
           </Link>
           <Link
-            href="https://twitter.com/yourusername"
-            target="_blank"
-            rel="noreferrer"
+            href="https://twitter.com"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <Twitter className="h-5 w-5" />
