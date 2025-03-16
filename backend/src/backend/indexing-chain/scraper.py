@@ -1,17 +1,52 @@
 # %%
 import asyncio
+import requests
 from crawl4ai import AsyncWebCrawler
 from crawl4ai.async_configs import BrowserConfig, CrawlerRunConfig, CacheMode
 from bs4 import BeautifulSoup
 from backend.models.indexing.models import HTMLDocument
 
+def get_urls_from_sitemap(sitemap_url):
+    response = requests.get(sitemap_url)
+    soup = BeautifulSoup(response.content, 'xml')
+    return [loc.text for loc in soup.find_all('loc')]
+
 def html_filter(html: str):
-    soup = BeautifulSoup(html, 'lxml')
-    article = soup.article.extract()
+    soup = BeautifulSoup(html, 'html.parser')
 
     # Remove common elements that provide no semantic value
-    for element in soup.find_all(['nav', 'header', 'footer', 'script', 'style', 'meta', 'link', 'noscript', 'iframe', 'svg', 'img']):
+    for element in soup.find_all(['nav', 'header', 'footer', 'script', 'style', 'meta', 'link', 'noscript', 'iframe', 'svg', 'img', 'hr']):
         element.decompose()
+
+    # Remove code lines
+    for element in soup.find_all("div", class_="linenodiv"):
+        element.decompose()
+
+    # Remove code lines
+    for element in soup.find_all("span", class_="ch-code-line-number"):
+        element.decompose()
+
+    # Unwrap anchors
+    for anchor in soup.find_all(['a', 'strong', 'abbr']):
+        anchor.unwrap()
+
+    for span in soup.find_all('span', string='#'):
+        span.decompose()
+
+    # Remove empty tags (excluding self-closing tags)
+    for tag in soup.find_all():
+        if not tag.get_text(strip=True) and tag.name not in ['br', 'hr', 'img', 'input']:
+            tag.decompose()
+
+
+    # Strip ALL attributes from all tags, keeping only tag names and content
+    for tag in soup.find_all(True):
+        tag.attrs = {}  # Simply clear all attributes by assigning an empty dict
+
+    article = soup.article
+
+    if article:
+        article = article.extract()
 
     if article:
         return str(article.prettify())
@@ -25,7 +60,8 @@ async def process_result(result):
     if result.success:
         scrape_result = HTMLDocument(
             source_url=result.url,
-            html=html_filter(result.cleaned_html)
+            html=html_filter(result.html)
+            # html=html_filter(result.cleaned_html)
         )
         scrape_results.append(scrape_result)
     else:
@@ -75,40 +111,58 @@ async def crawl_batch_parallel(urls, max_concurrent=2):
                     await process_result(result)
                 else:
                     fail_count += 1
-
         print(f"\n[SCRAPER SUMMARY] → SUCCESS: [{success_count}] | FAIL: [{fail_count}]")
 
     finally:
         print("[CLOSING CRAWLER]")
         await crawler.close()
 
-urls = [
-    "https://supabase.com/docs/guides/auth/server-side",
-    "https://supabase.com/docs/guides/auth/auth-email-passwordless",
-    "https://supabase.com/docs/guides/database/postgres/cascade-deletes",
-    "https://supabase.com/docs/guides/database/functions",
-    "https://supabase.com/docs/guides/database/postgres/row-level-security",
-    "https://python.langchain.com/docs/tutorials/chatbot/"
-]
-asyncio.create_task(crawl_batch_parallel(urls, max_concurrent=2))
+urls = get_urls_from_sitemap("https://docs.pydantic.dev/latest/sitemap.xml")[:50]
+# for url in urls:
+#     print(url)
 
+asyncio.create_task(crawl_batch_parallel(urls, max_concurrent=5))
 
-# # %%
-# test_html_document = scrape_results[5]
+# %%
+from converter import convert_htmls_to_markdowns, convert_to_mds
+from splitter import split_markdown_documents_by_headers, smart_split_markdown_documents, post_process_markdowns
+from backend.helpers.tokenizer import count_tokens
 
-# # %%
-# from converter import convert_html_to_markdown
-# test_converted_markdown = convert_html_to_markdown(test_html_document)
+# print(scrape_results[6].html)
 
-# # %%
-# from splitter import split_markdown_document_by_headers
-# split_document = split_markdown_document_by_headers(test_converted_markdown)
+# %%
+# markdowns_from_html = convert_htmls_to_markdowns(scrape_results)
+markdowns_from_html = convert_to_mds(scrape_results)
 
-# from backend.helpers.tokenizer import count_tokens
+# %%
+# split_markdowns = split_markdown_documents_by_headers(markdowns_from_html)
+split_markdowns = smart_split_markdown_documents(markdowns_from_html)
 
-# for chunk in split_document.chunks:
-#     print(f"CHUNK: [{chunk.chunk}] | TOKENS: [{count_tokens(chunk.markdown)}]")
-#     print(f"{chunk.markdown}")
-#     print("-----------------------------------------------SPLIT-------------------------------------------------------")
-#     print()
-#     print()
+total_chunks_after_smart_split = 0
+for markdown in split_markdowns:
+    total_chunks_after_smart_split += len(markdown.chunks)
+print(total_chunks_after_smart_split)
+
+# %%
+processed_markdowns = post_process_markdowns(split_markdowns)
+
+total_chunks_after_post_processing = 0
+for processed_md in processed_markdowns:
+    total_chunks_after_post_processing += len(processed_md.chunks)
+print(total_chunks_after_post_processing)
+
+# %%
+chunks_over_800_tokens = 0
+for processed_md in processed_markdowns:
+    print("--------------------------------------------------")
+    print(f"DOCUMENT: [{processed_md.source_url}]")
+    for chunk in processed_md.chunks:
+        if count_tokens(chunk.markdown) > 800:
+            chunks_over_800_tokens += 1
+        print(f"CHUNK: [{chunk.chunk}] | TOKENS: [{count_tokens(chunk.markdown)}]")
+        # print(f"{chunk.markdown}")
+        # print("-----------------------------------------------SPLIT-------------------------------------------------------")
+        # print()
+        # print()
+
+print(f"Number of chunks over 800 tokens: {chunks_over_800_tokens}")
