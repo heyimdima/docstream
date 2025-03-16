@@ -1,7 +1,11 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
-import { loginWithGithub, loginWithGoogle, loginWithX } from "@/app/(auth)/actions";
+import {
+  loginWithGithub,
+  loginWithGoogle,
+  loginWithX,
+} from "@/app/(auth)/actions";
 
 export function SocialLoginButtons() {
   return (
@@ -24,7 +28,7 @@ export function SocialLoginButtons() {
             <span className="sr-only">Login with GitHub</span>
           </Button>
         </form>
-        
+
         {/* Google login button */}
         <form action={loginWithGoogle}>
           <Button type="submit" variant="outline" className="w-full">
@@ -37,7 +41,7 @@ export function SocialLoginButtons() {
             <span className="sr-only">Login with Google</span>
           </Button>
         </form>
-        
+
         {/* X/Twitter login button */}
         <form action={loginWithX}>
           <Button type="submit" variant="outline" className="w-full">
