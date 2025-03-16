@@ -24,38 +24,41 @@ export function Header() {
           : "bg-transparent"
       }`}
     >
-      <div className="flex h-16 items-center px-4 md:px-6 lg:px-8">
+      <div className="container mx-auto h-16 flex items-center">
         {/* Left section - Logo */}
-        <div className="flex-none">
+        <div className="w-1/3 flex justify-start">
           <Link href="/" className="font-semibold text-xl">
             docstream
           </Link>
         </div>
 
         {/* Middle section - Navigation links */}
-        <div className="flex-1 flex justify-center">
-          <nav className="flex items-center gap-6">
-            <Link href="/about" className="text-sm font-medium hover:underline">
+        <div className="w-1/3 flex justify-center">
+          <nav className="flex items-center gap-8">
+            <Link
+              href="/about"
+              className="text-md font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               About
             </Link>
             <Link
-              href="/pricing"
-              className="text-sm font-medium hover:underline"
+              href="/features"
+              className="text-md font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Features
             </Link>
             <Link
-              href="/features"
-              className="text-sm font-medium hover:underline"
+              href="/pricing"
+              className="text-md font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Pricing
             </Link>
           </nav>
         </div>
 
-        {/* Right section - New Chat button */}
-        <div className="flex-none">
-          <Button size="sm">
+        {/* Right section - Sign in button */}
+        <div className="w-1/3 flex justify-end">
+          <Button variant="outline" asChild>
             <Link href="/chat">New Chat</Link>
           </Button>
         </div>
