@@ -1,8 +1,12 @@
+import uvicorn
 from fastapi import FastAPI
 
-app = FastAPI(title="Backend API")
+app = FastAPI()
 
-
-@app.post("/stream_chat_response")
-async def stream_response():
+@app.get("/")
+async def root():
     return {"message": "Hello World"}
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

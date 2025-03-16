@@ -46,9 +46,9 @@ export function SignInForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Convert the form values to FormData for the server action
     const formData = new FormData();
-    formData.append('email', values.email);
-    formData.append('password', values.password);
-    
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+
     // Call the server action with the form data
     await login(formData);
   }
@@ -57,7 +57,9 @@ export function SignInForm() {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Welcome back</CardTitle>
-        <CardDescription>Enter your email below to login to your account</CardDescription>
+        <CardDescription>
+          Enter your email below to login to your account
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <Form {...form}>
@@ -97,26 +99,35 @@ export function SignInForm() {
             </Button>
           </form>
         </Form>
-        
+
         {/* Social login buttons component */}
         <SocialLoginButtons />
 
         <div className="text-center text-sm">
-          <span className="text-muted-foreground">Don&apos;t have an account?{" "}</span>
-          <Link href="sign-up" className="underline underline-offset-4">Sign Up</Link>
+          <span className="text-muted-foreground">
+            Don&apos;t have an account?{" "}
+          </span>
+          <Link href="sign-up" className="underline underline-offset-4">
+            Sign Up
+          </Link>
         </div>
-        
+
         <div className="text-xs text-muted-foreground text-center">
-          By signing in, you agree to our{" "}
-          <Link href="/policies/terms-of-service" className="underline underline-offset-4 hover:text-primary">
+          By continuing, you agree to our{" "}
+          <Link
+            href="/policies/terms-of-service"
+            className="underline underline-offset-4 hover:text-primary"
+          >
             Terms of Service
           </Link>{" "}
           and{" "}
-          <Link href="/policies/privacy-policy" className="underline underline-offset-4 hover:text-primary">
+          <Link
+            href="/policies/privacy-policy"
+            className="underline underline-offset-4 hover:text-primary"
+          >
             Privacy Policy
           </Link>
         </div>
-        
       </CardContent>
     </Card>
   );

@@ -4,6 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import Link from "next/link";
+import { SocialLoginButtons } from "./SocialLoginButtons";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -51,17 +54,23 @@ export function SignUpForm() {
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
+    const formData = new FormData();
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+    formData.append("confirm", values.confirm);
     // ✅ This will be type-safe and validated.
     console.log(values);
   }
 
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Sign Up</CardTitle>
-        <CardDescription>Please enter your information</CardDescription>
+        <CardTitle>Create new account</CardTitle>
+        <CardDescription>
+          Enter information below to create a new account
+        </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -111,9 +120,40 @@ export function SignUpForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit" className="w-full">
+              Sign Up
+            </Button>
           </form>
         </Form>
+
+        {/* Social login buttons component */}
+        <SocialLoginButtons />
+
+        <div className="text-center text-sm">
+          <span className="text-muted-foreground">
+            Already have an account?{" "}
+          </span>
+          <Link href="sign-in" className="underline underline-offset-4">
+            Sign In
+          </Link>
+        </div>
+
+        <div className="text-xs text-muted-foreground text-center">
+          By continuing, you agree to our{" "}
+          <Link
+            href="/policies/terms-of-service"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link
+            href="/policies/privacy-policy"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </CardContent>
     </Card>
   );

@@ -1,38 +1,51 @@
-# FastAPI Backend
-
-This is a FastAPI-based backend service built with Poetry for dependency management.
-
-## Getting Started
-
-Follow these steps to set up and run the backend server locally in the correct order:
-
-
-### 1. Activate the virtual environment
-
+## Local Development
+1. Create a virtual environment (this project uses Python 3.11 exclusively)
 ```bash
-# Activate the Poetry environment
+poetry env use python3.11
+```
+
+2. Activate the virtual environment
+```bash
 eval $(poetry env activate)
 ```
 
-### 2. Install dependencies
-
+3. Install all dependencies (includes --group dev dependencies)
 ```bash
 poetry install
 ```
 
-This will install all required dependencies in the activated virtual environment.
-
-### 3. Run the server
-
+4. Run Crawl4AI Setup
 ```bash
-# Run the server using Poetry
+crawl4ai-setup
+```
+
+5. Run Crawl4AI Doctor (Optional)
+```bash
+crawl4ai-doctor
+```
+
+6. Run the backend server
+```bash
 poetry run uvicorn src.backend.main:app --reload
 ```
 
-The server will start at http://127.0.0.1:8000/ with auto-reload enabled.
+## Production Deployment (needs to be adjusted later)
+1. Install (for production deployment)
+```bash
+poetry install --without dev
+```
 
-### Access API documentation
+2. Run Crawl4AI Setup
+```bash
+crawl4ai-setup
+```
 
-- Swagger UI: http://127.0.0.1:8000/docs
-- ReDoc: http://127.0.0.1:8000/redoc
+3. Run Crawl4AI Doctor
+```bash
+crawl4ai-doctor
+```
 
+4. Run the backend server
+```bash
+poetry runuvicorn src.backend.main:app --host 0.0.0.0 --port 8080 --workers 4
+```
