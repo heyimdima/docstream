@@ -1,4 +1,6 @@
 import { LogOut } from "lucide-react";
+import { RecentChats } from "./nav-recent-chats";
+import { UserInfo } from "./nav-user-info";
 
 import {
   Sidebar,
@@ -14,16 +16,20 @@ export async function ChatSidebar() {
   return (
     <Sidebar variant="inset">
       <SidebarHeader>docstream</SidebarHeader>
-      <SidebarContent></SidebarContent>
+      <SidebarContent>
+        <RecentChats />
+      </SidebarContent>
 
       <SidebarFooter>
-        <form action={logout}>
-          <SidebarMenuButton type="submit" className="w-full">
-            <LogOut />
-            <span>Sign Out</span>
-          </SidebarMenuButton>
-        </form>
+        <UserInfo />
       </SidebarFooter>
     </Sidebar>
   );
 }
+
+// <form action={logout}>
+//   <SidebarMenuButton type="submit" className="w-full">
+//     <LogOut />
+//     <span>Sign Out</span>
+//   </SidebarMenuButton>
+// </form>

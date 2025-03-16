@@ -1,26 +1,22 @@
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from "@/utils/supabase/server";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
-import { logout } from '@/app/(auth)/actions'
-
-
+import { logout } from "@/app/(auth)/actions";
 
 export default async function PrivatePage() {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) { redirect('/sign-in') }
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data?.user) {
+    redirect("/sign-in");
+  }
 
   return (
     <div>
-      <h1>Chat</h1>
-      <p>Welcome, {data.user.email}!</p>
-      <form action={logout}>
-      <Button type='submit'>Logout</Button>
-      </form>
+      <h1>This is a private page, new chat prompt is going to start here</h1>
     </div>
-  )
+  );
 }
