@@ -1,4 +1,3 @@
-import { LogOut } from "lucide-react";
 import { RecentChats } from "./nav-recent-chats";
 import { UserInfo } from "./nav-user-info";
 
@@ -6,11 +5,8 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarMenuButton,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-
-import { logout } from "@/app/(auth)/actions";
 
 export async function ChatSidebar() {
   return (
