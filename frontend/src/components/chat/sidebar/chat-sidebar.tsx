@@ -22,10 +22,3 @@ export async function ChatSidebar() {
     </Sidebar>
   );
 }
-
-// <form action={logout}>
-//   <SidebarMenuButton type="submit" className="w-full">
-//     <LogOut />
-//     <span>Sign Out</span>
-//   </SidebarMenuButton>
-// </form>

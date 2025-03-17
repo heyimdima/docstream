@@ -12,7 +12,7 @@ export default async function PrivatePage() {
 
   return (
     <div>
-      <h1>This is a private page, new chat prompt is going to start here</h1>
+      <h1>This is a protected page, new chat prompt is going to start here</h1>
     </div>
   );
 }
