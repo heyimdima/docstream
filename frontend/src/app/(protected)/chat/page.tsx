@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
-import { PromptForm } from "@/components/chat/prompt-form";
 import { ChatInterface } from "@/components/chat/chat-interface";
 
 export default async function NewChatPage() {
