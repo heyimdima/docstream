@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Message } from "@/types/message";
 import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ChatDocumentation } from "@/types/chat-documentation";
 import { addChatMessage, createNewChat } from "@/app/(protected)/chat/actions";
 import { ExistingChat } from "@/types/chat";
@@ -30,7 +28,7 @@ export function ChatInterface({ initialChat }: ChatInterfaceProps) {
 
   // Simple effect to scroll to the bottom when messages or currentResponse change
   useEffect(() => {
-    // Smoothly scroll to bottom whenever messages change or new content is streamed
+    // Scroll to bottom whenever messages change or new content is streamed
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "auto" });
     }
@@ -60,8 +58,6 @@ export function ChatInterface({ initialChat }: ChatInterfaceProps) {
       setMessages(updatedMessages);
 
       setPrompt("");
-
-      // No flags needed for simpler implementation
 
       // Set streaming to true and clear current response
       setStreaming(true);
@@ -130,51 +126,9 @@ export function ChatInterface({ initialChat }: ChatInterfaceProps) {
           {messages?.map((message, index) => (
             <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
               <Card className={`p-4 max-w-2xl ${message.role === "user" ? "bg-secondary" : "bg-secondary"}`}>
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    // @ts-ignore - Ignoring type issues with the component props
-                    code({ inline, className, children, ...props }) {
-                      const match = /language-(\w+)/.exec(className || "");
-                      return !inline && match ? (
-                        <SyntaxHighlighter
-                          // @ts-expect-error - The type definitions for the style prop are incompatible
-                          style={vscDarkPlus}
-                          language={match[1]}
-                          PreTag="div"
-                          {...props}>
-                          {String(children).replace(/\n$/, "")}
-                        </SyntaxHighlighter>
-                      ) : (
-                        <code className="bg-gray-800 px-1 py-0.5 rounded text-sm" {...props}>
-                          {children}
-                        </code>
-                      );
-                    },
-                    // Add some basic styling for common elements using ts-ignore to avoid type errors
-                    // @ts-ignore
-                    h1: (props) => <h1 className="text-2xl font-bold mt-6 mb-4" {...props} />,
-                    // @ts-ignore
-                    h2: (props) => <h2 className="text-xl font-bold mt-5 mb-3" {...props} />,
-                    // @ts-ignore
-                    h3: (props) => <h3 className="text-lg font-bold mt-4 mb-2" {...props} />,
-                    // @ts-ignore
-                    p: (props) => <p className="mb-4" {...props} />,
-                    // @ts-ignore
-                    ul: (props) => <ul className="list-disc pl-6 mb-4" {...props} />,
-                    // @ts-ignore
-                    ol: (props) => <ol className="list-decimal pl-6 mb-4" {...props} />,
-                    // @ts-ignore
-                    li: (props) => <li className="mb-1" {...props} />,
-                    // @ts-ignore
-                    table: (props) => <table className="border-collapse mb-4" {...props} />,
-                    // @ts-ignore
-                    th: (props) => <th className="border border-gray-600 px-4 py-2" {...props} />,
-                    // @ts-ignore
-                    td: (props) => <td className="border border-gray-600 px-4 py-2" {...props} />,
-                  }}>
-                  {message.content}
-                </ReactMarkdown>
+                <div className="prose dark:prose-invert max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+                </div>
               </Card>
             </div>
           ))}
@@ -182,51 +136,9 @@ export function ChatInterface({ initialChat }: ChatInterfaceProps) {
           {streaming && (
             <div className="flex justify-start">
               <Card className={`p-4 max-w-2xl`}>
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    // @ts-ignore - Ignoring type issues with the component props
-                    code({ inline, className, children, ...props }) {
-                      const match = /language-(\w+)/.exec(className || "");
-                      return !inline && match ? (
-                        <SyntaxHighlighter
-                          // @ts-expect-error - The type definitions for the style prop are incompatible
-                          style={vscDarkPlus}
-                          language={match[1]}
-                          PreTag="div"
-                          {...props}>
-                          {String(children).replace(/\n$/, "")}
-                        </SyntaxHighlighter>
-                      ) : (
-                        <code className="bg-gray-800 px-1 py-0.5 rounded text-sm" {...props}>
-                          {children}
-                        </code>
-                      );
-                    },
-                    // Add some basic styling for common elements using ts-ignore to avoid type errors
-                    // @ts-ignore
-                    h1: (props) => <h1 className="text-2xl font-bold mt-6 mb-4" {...props} />,
-                    // @ts-ignore
-                    h2: (props) => <h2 className="text-xl font-bold mt-5 mb-3" {...props} />,
-                    // @ts-ignore
-                    h3: (props) => <h3 className="text-lg font-bold mt-4 mb-2" {...props} />,
-                    // @ts-ignore
-                    p: (props) => <p className="mb-4" {...props} />,
-                    // @ts-ignore
-                    ul: (props) => <ul className="list-disc pl-6 mb-4" {...props} />,
-                    // @ts-ignore
-                    ol: (props) => <ol className="list-decimal pl-6 mb-4" {...props} />,
-                    // @ts-ignore
-                    li: (props) => <li className="mb-1" {...props} />,
-                    // @ts-ignore
-                    table: (props) => <table className="border-collapse mb-4" {...props} />,
-                    // @ts-ignore
-                    th: (props) => <th className="border border-gray-600 px-4 py-2" {...props} />,
-                    // @ts-ignore
-                    td: (props) => <td className="border border-gray-600 px-4 py-2" {...props} />,
-                  }}>
-                  {currentResponse}
-                </ReactMarkdown>
+                <div className="prose dark:prose-invert max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{currentResponse}</ReactMarkdown>
+                </div>
               </Card>
             </div>
           )}
