@@ -2,13 +2,11 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { Chat } from "@/types/chat";
 import { Message } from "@/types/message";
 import { ChatDocumentation } from "@/types/chat-documentation";
 import { Documentation } from "@/types/documentation";
 import { ExistingChat } from "@/types/chat";
-import { unstable_cache } from "next/cache";
 
 // Create a new chat
 export async function createNewChat(prompt: string) {
@@ -30,24 +28,24 @@ export async function createNewChat(prompt: string) {
   return chat.id as string;
 }
 
-export async function addChatDocumentation(chat_id: string, documentation_id: string, formData: FormData) {
-  const supabase = await createClient();
+// export async function addChatDocumentation(chat_id: string, documentation_id: string, formData: FormData) {
+//   const supabase = await createClient();
 
-  const { data: documentation, error } = await supabase
-    .from("chat_documentations")
-    .insert({ chat_id: chat_id, documentation_id: documentation_id });
+//   const { data: documentation, error } = await supabase
+//     .from("chat_documentations")
+//     .insert({ chat_id: chat_id, documentation_id: documentation_id });
 
-  if (error) {
-    console.error("Error adding documentation to chat:", error);
-    throw new Error("Failed to add documentation to chat");
-  }
-}
+//   if (error) {
+//     console.error("Error adding documentation to chat:", error);
+//     throw new Error("Failed to add documentation to chat");
+//   }
+// }
 
 export async function addChatMessage(message: Message) {
   console.log("Adding message to chat: ", message);
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("messages")
     .insert({ chat_id: message.chat_id, content: message.content, role: message.role });
 
@@ -68,12 +66,6 @@ export async function getChats() {
 
   return chats as Chat[];
 }
-
-// app/(protected)/chat/actions.ts
-import { cookies } from "next/headers";
-// import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
-
-// app/(protected)/chat/actions.ts
 
 export async function getChatById(chat_id: string) {
   const supabase = await createClient();

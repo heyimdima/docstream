@@ -1,10 +1,6 @@
 // app/api/stream-response/route.ts
 import { NextRequest } from "next/server";
 
-export const dynamic = "force-dynamic";
-import { Message } from "@/types/message";
-import { ChatDocumentation } from "@/types/chat-documentation";
-
 export async function POST(request: NextRequest) {
   try {
     const { chatHistory, documentations } = await request.json();
