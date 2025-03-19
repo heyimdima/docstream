@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     // console.log("documentations", documentations);
 
     // Pass the request to your FastAPI backend
-    const response = await fetch("http://0.0.0.0:8000/stream_response", {
+    const response = await fetch(process.env.BACKEND_API_URL + "/stream_response", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
