@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
+import { PromptForm } from "@/components/chat/prompt-form";
+import { ChatInterface } from "@/components/chat/chat-interface";
 
-export default async function PrivatePage() {
+export default async function NewChatPage() {
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.getUser();
@@ -12,7 +14,7 @@ export default async function PrivatePage() {
 
   return (
     <div>
-      <h1>This is a protected page, new chat prompt is going to start here</h1>
+      <ChatInterface />
     </div>
   );
 }
