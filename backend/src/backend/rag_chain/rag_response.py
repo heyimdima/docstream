@@ -2,6 +2,9 @@ from dotenv import load_dotenv
 import os, uuid
 from openai import OpenAI
 from pinecone import Pinecone
+from backend.models.rag.models import Message, ChatDocumentation, SemanticMatch
+from typing import List
+from supabase import create_client, Client
 
 # Load environment variables from .env file
 load_dotenv()
@@ -18,12 +21,28 @@ index = pinecone.Index(
     connection_pool_maxsize=50
     )
 
+# Initialize Supabase client
+url: str = os.environ.get("SUPABASE_URL")
+key: str = os.environ.get("SUPABASE_KEY")
+supabase: Client = create_client(url, key)
+
 def get_embedding(text, model="text-embedding-3-large"):
     return chatgpt.embeddings.create(input=[text], model=model).data[0].embedding
 
-def search_pinecone(user_query: str, embedding_ids: list[str]):
+def search_pinecone(chat_history: List[Message], documentations: List[ChatDocumentation]):
     # Convert a list of embedding ids to a list of strings
-    string_embedding_ids = [str(embedding_id) for embedding_id in embedding_ids]
+    documentation_ids = [doc.documentation_id for doc in documentations]
+    user_query = chat_history[-1].content
+
+    result = (
+        supabase.table("documentations")
+        .select("embedding_id")
+        .in_("id", documentation_ids)  # Use .in_() instead of .eq()
+        .execute()
+    )
+
+    # Get the embedding ids from the result
+    embedding_ids = [doc["embedding_id"] for doc in result.data]
 
     # Get embeddings for user query
     user_query_embedding = get_embedding(user_query)
@@ -32,7 +51,7 @@ def search_pinecone(user_query: str, embedding_ids: list[str]):
         # Query Pinecone index
         search_result = index.query_namespaces(
             vector=user_query_embedding,
-            namespaces=string_embedding_ids,
+            namespaces=embedding_ids,
             metric="cosine",
             top_k=5,
             include_metadata=True
@@ -60,8 +79,8 @@ def search_pinecone(user_query: str, embedding_ids: list[str]):
         # Return an empty list instead of an error string
         return []
 
-def stream_chatgpt_response(user_query: str, matches: List[SemanticMatch]):
-    system_prompt = """
+def stream_chatgpt_response(user_query: str, matches: List[SemanticMatch], chatHistory: List[Message]):
+    system_prompt = f"""
     You are an AI assistant that answers questions based on provided documentation chunks.
     Use the given documentation chunks if relevant; otherwise, say no information was found.
     At the end, list the sources used. Your response should be in markdown format.
@@ -83,7 +102,7 @@ def stream_chatgpt_response(user_query: str, matches: List[SemanticMatch]):
     ]
 
     stream = chatgpt.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=messages,
         stream=True
     )

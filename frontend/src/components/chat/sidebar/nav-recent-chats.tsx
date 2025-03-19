@@ -1,4 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { MessagesSquare } from "lucide-react";
 import {
@@ -9,34 +8,10 @@ import {
   SidebarMenuItem,
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
-
-// Define Chat type
-interface Chat {
-  id: string;
-  title: string;
-  // Add other properties as needed
-}
-
-// This function will be automatically memoized by Next.js
-async function fetchChats() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("chats")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("Error fetching chats:", error);
-    return [];
-  }
-
-  return data as Chat[];
-}
+import { getChats } from "@/app/(protected)/chat/actions";
 
 export async function RecentChats() {
-  // Fetch chats directly in the component
-  // Next.js will automatically deduplicate this request
-  const chats = await fetchChats();
+  const chats = await getChats();
 
   return (
     <SidebarGroup>
@@ -44,11 +19,7 @@ export async function RecentChats() {
       <SidebarGroupContent>
         <SidebarMenu>
           {/* Show message if no chats */}
-          {chats.length === 0 && (
-            <div className="px-2 py-4 text-sm text-muted-foreground">
-              No recent chats
-            </div>
-          )}
+          {chats.length === 0 && <div className="px-2 py-4 text-sm text-muted-foreground">No recent chats</div>}
 
           {/* List of chats */}
           {chats.map((chat) => (
