@@ -1,4 +1,5 @@
 import uvicorn
+import os
 from fastapi import FastAPI, HTTPException, Depends
 from typing import List, Optional
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,19 +14,26 @@ app = FastAPI(
     version="0.1.0"
 )
 
+ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
+VERCEL_URL = os.environ.get("VERCEL_URL", "")
+ALLOWED_ORIGINS = [f"https://{VERCEL_URL}"] if VERCEL_URL else ["*"]
 
-# Add CORS middleware
+# Then update your CORS middleware:
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS if ENVIRONMENT == "production" else ["*"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"] if ENVIRONMENT == "production" else ["*"],
+    allow_headers=["Content-Type", "Authorization"] if ENVIRONMENT == "production" else ["*"],
 )
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
 
 @app.post("/stream_response")
