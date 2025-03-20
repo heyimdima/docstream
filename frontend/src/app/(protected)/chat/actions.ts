@@ -28,18 +28,28 @@ export async function createNewChat(prompt: string) {
   return chat.id as string;
 }
 
-// export async function addChatDocumentation(chat_id: string, documentation_id: string, formData: FormData) {
-//   const supabase = await createClient();
+export async function addChatDocumentation(chat_id: string, documentation_id: string) {
+  const supabase = await createClient();
 
-//   const { data: documentation, error } = await supabase
-//     .from("chat_documentations")
-//     .insert({ chat_id: chat_id, documentation_id: documentation_id });
+  const { data: error } = await supabase
+    .from("chat_documentations")
+    .insert({ chat_id: chat_id, documentation_id: documentation_id });
 
-//   if (error) {
-//     console.error("Error adding documentation to chat:", error);
-//     throw new Error("Failed to add documentation to chat");
-//   }
-// }
+  if (error) {
+    console.error("Error adding documentation to chat:", error);
+    throw new Error("Failed to add documentation to chat");
+  }
+}
+
+export async function removeChatDocumentation(chat_id: string, documentation_id: string) {
+  const supabase = await createClient();
+
+  const { data: error } = await supabase
+    .from("chat_documentations")
+    .delete()
+    .eq("chat_id", chat_id)
+    .eq("documentation_id", documentation_id);
+}
 
 export async function addChatMessage(message: Message) {
   console.log("Adding message to chat: ", message);

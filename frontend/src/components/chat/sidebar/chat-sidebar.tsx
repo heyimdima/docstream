@@ -1,16 +1,11 @@
 import { RecentChats } from "./nav-recent-chats";
 import { UserInfo } from "./nav-user-info";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar";
 
 export async function ChatSidebar() {
   return (
-    <Sidebar variant="inset">
+    <Sidebar variant="sidebar">
       <SidebarHeader>docstream</SidebarHeader>
       <SidebarContent>
         <RecentChats />

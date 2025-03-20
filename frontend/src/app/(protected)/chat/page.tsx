@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
-import { ChatInterface } from "@/components/chat/chat-interface";
+import { Chat } from "@/components/chat/chat";
+import { getAvaliableDocumentations } from "./actions";
 
 export default async function NewChatPage() {
   const supabase = await createClient();
@@ -10,10 +11,7 @@ export default async function NewChatPage() {
   if (error || !data?.user) {
     redirect("/sign-in");
   }
+  const avaliableDocumentations = await getAvaliableDocumentations();
 
-  return (
-    <div>
-      <ChatInterface />
-    </div>
-  );
+  return <Chat documentations={avaliableDocumentations} />;
 }
