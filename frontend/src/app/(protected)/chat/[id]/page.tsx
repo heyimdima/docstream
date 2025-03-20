@@ -15,8 +15,7 @@
 import ChatPage from "@/components/chat/chat-page";
 import { getAvaliableDocumentations } from "@/app/(protected)/chat/actions";
 
-export default async function ExistingChatPage({ params }: { params: { id: string } }) {
-  // Params is not a Promise, it's a direct object
+export default async function ExistingChatPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const documentations = await getAvaliableDocumentations();
 
