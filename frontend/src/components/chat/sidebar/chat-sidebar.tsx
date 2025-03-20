@@ -1,18 +1,24 @@
 import { RecentChats } from "./nav-recent-chats";
 import { UserInfo } from "./nav-user-info";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader } from "@/components/ui/sidebar";
 
 export async function ChatSidebar() {
   return (
-    <Sidebar variant="inset">
+    <Sidebar variant="sidebar">
       <SidebarHeader>docstream</SidebarHeader>
       <SidebarContent>
+        <SidebarGroup>
+          <Button asChild>
+            <a href="/chat">
+              New Chat
+              <Plus />
+            </a>
+          </Button>
+        </SidebarGroup>
         <RecentChats />
       </SidebarContent>
 

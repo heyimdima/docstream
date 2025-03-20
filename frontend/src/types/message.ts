@@ -1,5 +1,5 @@
 export interface Message {
-  id?: string;
+  id: string;
   chat_id: string;
   role: "user" | "ai";
   content: string;
