@@ -1,7 +1,6 @@
 import { RecentChats } from "./nav-recent-chats";
 import { UserInfo } from "./nav-user-info";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Plus } from "lucide-react";
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader } from "@/components/ui/sidebar";
