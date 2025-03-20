@@ -9,55 +9,56 @@ import { Documentation } from "@/types/documentation";
 import { ExistingChat } from "@/types/chat";
 
 // Create a new chat
-export async function createNewChat(prompt: string) {
+export async function createNewChat(newChatId: string, prompt: string) {
   const supabase = await createClient();
 
-  // Create a new chat entry
-  const { data: chat, error } = await supabase
-    .from("chats")
-    .insert({ title: prompt.slice(0, 50) })
-    .select()
-    .single();
+  const { data: error } = await supabase.from("chats").insert({ id: newChatId, title: prompt.slice(0, 25) });
 
   if (error) {
     console.error("Error creating a new chat:", error);
     throw new Error("Failed to create a new chat");
   }
   revalidatePath("/chat");
-
-  return chat.id as string;
 }
 
-export async function addChatDocumentation(chat_id: string, documentation_id: string) {
+export async function updateChatDocumentations(chatId: string, documentations: Documentation[]) {
   const supabase = await createClient();
 
-  const { data: error } = await supabase
-    .from("chat_documentations")
-    .insert({ chat_id: chat_id, documentation_id: documentation_id });
+  // Use a transaction-like approach for atomicity
+  const { error: deleteError } = await supabase.from("chat_documentations").delete().eq("chat_id", chatId);
 
-  if (error) {
-    console.error("Error adding documentation to chat:", error);
-    throw new Error("Failed to add documentation to chat");
+  if (deleteError) {
+    console.error("Error removing existing documentation from chat:", deleteError);
+    throw new Error("Failed to update documentation for chat");
+  }
+
+  // Insert new documentations if there are any
+  if (documentations.length > 0) {
+    const { error: insertError } = await supabase.from("chat_documentations").insert(
+      documentations.map((doc) => ({
+        chat_id: chatId,
+        documentation_id: doc.id,
+      }))
+    );
+
+    if (insertError) {
+      console.error("Error adding documentation to chat:", insertError);
+      throw new Error("Failed to add documentation to chat");
+    }
   }
 }
 
-export async function removeChatDocumentation(chat_id: string, documentation_id: string) {
-  const supabase = await createClient();
-
-  const { data: error } = await supabase
-    .from("chat_documentations")
-    .delete()
-    .eq("chat_id", chat_id)
-    .eq("documentation_id", documentation_id);
-}
-
 export async function addChatMessage(message: Message) {
-  console.log("Adding message to chat: ", message);
+  // console.log("Adding message to chat: ", message);
   const supabase = await createClient();
 
-  const { error } = await supabase
-    .from("messages")
-    .insert({ chat_id: message.chat_id, content: message.content, role: message.role });
+  const { error } = await supabase.from("messages").insert({
+    id: message.id,
+    chat_id: message.chat_id,
+    content: message.content,
+    role: message.role,
+    created_at: message.created_at,
+  });
 
   if (error) {
     console.error("Error adding message to chat:", error);

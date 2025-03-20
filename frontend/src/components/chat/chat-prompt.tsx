@@ -9,15 +9,16 @@ import { DocumentationSearchDialog } from "./documentation-search-dialog";
 import { X } from "lucide-react";
 
 interface ChatPromptProps {
-  documentatations: Documentation[];
+  documentations: Documentation[];
   initialSelectedDocs?: ChatDocumentation[];
+  onSubmit: (message: string, selectedDocs: Documentation[]) => Promise<void>;
+  isLoading?: boolean;
 }
 
-export function ChatPrompt({ initialSelectedDocs, documentatations }: ChatPromptProps) {
-  const [documentations] = useState<Documentation[]>(documentatations);
+export function ChatPrompt({ initialSelectedDocs, documentations, onSubmit, isLoading = false }: ChatPromptProps) {
+  const [availableDocs] = useState<Documentation[]>(documentations);
   const [selectedDocumentations, setSelectedDocumentation] = useState<Documentation[]>([]);
   const [prompt, setPrompt] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Convert initialSelectedDocs to Documentation[] when component mounts or initialSelectedDocs changes
@@ -25,24 +26,33 @@ export function ChatPrompt({ initialSelectedDocs, documentatations }: ChatPrompt
     if (initialSelectedDocs && initialSelectedDocs.length > 0) {
       // Map the initialSelectedDocs to Documentation objects by finding matching documentation_id
       const selected = initialSelectedDocs
-        .map((chatDoc) => documentations.find((doc) => doc.id === chatDoc.documentation_id))
+        .map((chatDoc) => availableDocs.find((doc) => doc.id === chatDoc.documentation_id))
         .filter((doc): doc is Documentation => doc !== undefined);
 
       setSelectedDocumentation(selected);
+    } else {
+      setSelectedDocumentation([]);
     }
-  }, [initialSelectedDocs, documentations]);
+  }, [initialSelectedDocs, availableDocs]);
 
-  const handleAddDocumentation = (doc: Documentation) => {
-    if (!selectedDocumentations.some((selected) => selected.id === doc.id)) {
-      setSelectedDocumentation([...selectedDocumentations, doc]);
+  // Focus textarea for new chat
+  useEffect(() => {
+    if (!initialSelectedDocs || initialSelectedDocs.length === 0) {
+      textareaRef.current?.focus();
     }
-  };
+  }, [initialSelectedDocs]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Submit on Enter (but not Shift+Enter)
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevent default to avoid new line
+      e.preventDefault();
       handleSubmit(e as unknown as React.FormEvent);
+    }
+  };
+
+  const handleAddDocumentation = (doc: Documentation) => {
+    if (!selectedDocumentations.some((selected) => selected.id === doc.id)) {
+      setSelectedDocumentation([...selectedDocumentations, doc]);
     }
   };
 
@@ -52,27 +62,19 @@ export function ChatPrompt({ initialSelectedDocs, documentatations }: ChatPrompt
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!prompt.trim()) return;
+    if (!prompt.trim() || isLoading) return;
 
     // Blur (unfocus) the textarea to prevent highlighting
     textareaRef.current?.blur();
 
-    setIsLoading(true);
+    const currentPrompt = prompt;
+    setPrompt("");
 
     try {
-      // Here you would add your API call to send the message
-      // For example: await sendMessage(prompt, selectedDocumentations);
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Clear the prompt after successful send
-      setPrompt("");
+      // Call the parent component's onSubmit function
+      await onSubmit(currentPrompt, selectedDocumentations);
     } catch (error) {
       console.error("Failed to send message:", error);
-      // You could add error handling/notification here
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -90,7 +92,8 @@ export function ChatPrompt({ initialSelectedDocs, documentatations }: ChatPrompt
                 variant="ghost"
                 size="sm"
                 className="ml-1 h-5 w-5 p-0 text-secondary-foreground/70 hover:text-secondary-foreground"
-                onClick={() => handleRemoveDocumentation(doc.id)}>
+                onClick={() => handleRemoveDocumentation(doc.id)}
+                disabled={isLoading}>
                 <X className="h-3 w-3" />
               </Button>
             </div>
@@ -100,19 +103,21 @@ export function ChatPrompt({ initialSelectedDocs, documentatations }: ChatPrompt
 
       <form onSubmit={handleSubmit} className="relative mx-auto max-w-3xl">
         <Textarea
-          className="resize-none p-4 pr-24"
+          className="resize-none p-4 pr-24 max-h-48"
           name="prompt"
           placeholder="Ask anything"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={handleKeyDown}
           ref={textareaRef}
+          disabled={isLoading}
         />
         <div className="absolute right-3 bottom-3 flex items-center gap-2">
           <DocumentationSearchDialog
-            documentations={documentations}
+            documentations={availableDocs}
             selectedDocumentations={selectedDocumentations}
             onSelectDocumentation={handleAddDocumentation}
+            disabled={isLoading}
           />
           <Button type="submit" size="icon" disabled={isLoading || !prompt.trim()} className="rounded-full h-8 w-8">
             {isLoading ? (

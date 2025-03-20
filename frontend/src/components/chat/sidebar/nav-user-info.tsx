@@ -1,10 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import {
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-} from "@/components/ui/sidebar";
+import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 import { User2, ChevronUp, LogOut, Settings } from "lucide-react";
 import {
   DropdownMenu,
@@ -31,8 +27,8 @@ export async function UserInfo() {
   // Fetch user - Next.js will automatically cache this
   const user = await fetchUser();
 
-  // Get display name (use email if no name available)
-  const displayName = user.user_metadata?.name || user.email;
+  // Get display name (use email)
+  const displayName = user.email;
 
   return (
     <SidebarMenu>
