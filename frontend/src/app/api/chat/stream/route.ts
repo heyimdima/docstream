@@ -3,10 +3,7 @@ import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const { chatHistory, documentations } = await request.json();
-
-    // console.log("chatHistory", chatHistory);
-    // console.log("documentations", documentations);
+    const { chatHistory, chatDocumentations } = await request.json();
 
     // Pass the request to your FastAPI backend
     const response = await fetch(process.env.BACKEND_API_URL + "/stream_response", {
@@ -16,7 +13,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         chatHistory,
-        documentations,
+        chatDocumentations,
       }),
     });
 

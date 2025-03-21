@@ -50,7 +50,7 @@ export default function ChatPage({ availableDocumentations, chatId: serverChatId
 
   // Simple streaming simulation - replace with your actual streaming API
   // Update the streamResponse function to accept messages
-  const streamResponse = async (currentMessages: Message[], currentDocs: ChatDocumentation[]) => {
+  const streamResponse = async (currentMessages: Message[], currentDocs: Documentation[]) => {
     setIsStreaming(true);
     setStreamedResponse("");
 
@@ -61,7 +61,7 @@ export default function ChatPage({ availableDocumentations, chatId: serverChatId
       },
       body: JSON.stringify({
         chatHistory: currentMessages,
-        documentations: currentDocs,
+        chatDocumentations: currentDocs,
       }),
     });
     if (!response.ok) {
@@ -85,8 +85,8 @@ export default function ChatPage({ availableDocumentations, chatId: serverChatId
     return fullResponse;
   };
 
-  const handleSubmitMessage = async (content: string, selectedDocs: Documentation[]) => {
-    if (!content.trim()) return;
+  const handleSubmitMessage = async (prompt: string, selectedDocs: Documentation[]) => {
+    if (!prompt.trim()) return;
 
     // ---- Handle New Chat ----
     if (!effectiveChatId) {
@@ -97,7 +97,7 @@ export default function ChatPage({ availableDocumentations, chatId: serverChatId
       const userMessage: Message = {
         id: uuidv4().toString(),
         chat_id: newChatId,
-        content: content,
+        content: prompt,
         role: "user",
         created_at: new Date(),
       };
@@ -125,7 +125,7 @@ export default function ChatPage({ availableDocumentations, chatId: serverChatId
       window.history.pushState({}, "", `/chat/${newChatId}`);
 
       // Start streaming AI response with the current messages
-      const responseText = await streamResponse(initialChat.messages, initialChat.documentations);
+      const responseText = await streamResponse(initialChat.messages, selectedDocs);
 
       // Create the AI message
       const aiMessage: Message = {
@@ -147,7 +147,7 @@ export default function ChatPage({ availableDocumentations, chatId: serverChatId
 
       // Persist everything to the database
       try {
-        await createNewChat(newChatId, content);
+        await createNewChat(newChatId, prompt);
         await addChatMessage(userMessage);
         await addChatMessage(aiMessage);
         await updateChatDocumentations(newChatId, selectedDocs);
@@ -167,7 +167,7 @@ export default function ChatPage({ availableDocumentations, chatId: serverChatId
       const userMessage: Message = {
         id: uuidv4().toString(),
         chat_id: effectiveChatId,
-        content: content,
+        content: prompt,
         role: "user",
         created_at: new Date(),
       };
@@ -193,7 +193,7 @@ export default function ChatPage({ availableDocumentations, chatId: serverChatId
       setChat(updatedChat);
 
       // Start streaming with the updated messages
-      const responseText = await streamResponse(updatedMessages, updatedChatDocs);
+      const responseText = await streamResponse(updatedMessages, selectedDocs);
 
       // Create AI message
       const aiMessage: Message = {

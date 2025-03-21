@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os, uuid
 from openai import OpenAI
 from pinecone import Pinecone
-from backend.models.rag.models import Message, ChatDocumentation, SemanticMatch
+from backend.models.rag.models import Message, Documentation, SemanticMatch
 from typing import List
 from supabase import create_client, Client
 
@@ -29,23 +29,9 @@ supabase: Client = create_client(url, key)
 def get_embedding(text, model="text-embedding-3-large"):
     return chatgpt.embeddings.create(input=[text], model=model).data[0].embedding
 
-def search_pinecone(chat_history: List[Message], documentations: List[ChatDocumentation]):
-    # Convert a list of embedding ids to a list of strings
-    documentation_ids = [doc.documentation_id for doc in documentations]
-    user_query = chat_history[-1].content
-
-    result = (
-        supabase.table("documentations")
-        .select("embedding_id")
-        .in_("id", documentation_ids)  # Use .in_() instead of .eq()
-        .execute()
-    )
-
-    # Get the embedding ids from the result
-    embedding_ids = [doc["embedding_id"] for doc in result.data]
-
-    # Get embeddings for user query
-    user_query_embedding = get_embedding(user_query)
+def search_pinecone(prompt: str, documentations: List[Documentation]):
+    embedding_ids = [doc.embedding_id for doc in documentations]
+    user_query_embedding = get_embedding(prompt)
 
     try:
         # Query Pinecone index

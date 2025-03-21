@@ -38,22 +38,36 @@ async def health_check():
 
 @app.post("/stream_response")
 async def stream_response(request: StreamResponseRequest):
-    # You'll need to modify your search_pinecone function to work with the new model structure
-    search_result = search_pinecone(request.chatHistory, request.documentations)
-    
-    # Get the last user message
-    last_message = request.chatHistory[-1].content
+    prompt = request.chatHistory[-1].content
+
+    chat_history = request.chatHistory
+    chat_history.pop()
+
+    documentations = request.chatDocumentations
+
+    search_result = search_pinecone(prompt, documentations)
     
     response = StreamingResponse(
         stream_chatgpt_response(
-            last_message, 
+            prompt, 
             search_result, 
-            request.chatHistory
+            chat_history
         ), 
         media_type="text/markdown"
     )
     
     return response
+
+# @app.post("/stream_response")
+# async def stream(request: StreamResponseRequest):
+#     try:
+#         prompt = request.chatHistory[-1].content
+#         chat_history = request.chatHistory[:-1]
+#         documentations = request.chatDocumentations
+        
+
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"ERROR: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

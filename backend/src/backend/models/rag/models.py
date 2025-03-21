@@ -17,12 +17,14 @@ class Message(BaseModel):
     content: str
     created_at: datetime
 
-class ChatDocumentation(BaseModel):
+class Documentation(BaseModel):
     id: str
-    chat_id: str
-    documentation_id: str
-    attached_at: datetime
+    source_url: str
+    name: str
+    embedding_id: str
+    updated_at: datetime
+    created_at: datetime
 
 class StreamResponseRequest(BaseModel):
     chatHistory: List[Message]
-    documentations: List[ChatDocumentation] = []
+    chatDocumentations: List[Documentation]
