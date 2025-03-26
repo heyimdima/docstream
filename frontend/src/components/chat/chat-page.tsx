@@ -48,8 +48,6 @@ export default function ChatPage({ availableDocumentations, chatId: serverChatId
     loadChat();
   }, [serverChatId, router]);
 
-  // Simple streaming simulation - replace with your actual streaming API
-  // Update the streamResponse function to accept messages
   const streamResponse = async (currentMessages: Message[], currentDocs: Documentation[]) => {
     setIsStreaming(true);
     setStreamedResponse("");
