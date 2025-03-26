@@ -11,7 +11,7 @@ class SemanticMatch(BaseModel):
     score: float
 
 class Message(BaseModel):
-    id: Optional[str] = None
+    id: str
     chat_id: str
     role: Literal['user', 'ai']
     content: str

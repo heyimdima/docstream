@@ -117,7 +117,7 @@ async def crawl_batch_parallel(urls, max_concurrent=2):
         print("[CLOSING CRAWLER]")
         await crawler.close()
 
-urls = get_urls_from_sitemap("https://docs.pydantic.dev/latest/sitemap.xml")[:50]
+urls = get_urls_from_sitemap("https://supabase.com/docs/sitemap.xml")[:10]
 # for url in urls:
 #     print(url)
 
@@ -128,7 +128,7 @@ from converter import convert_htmls_to_markdowns, convert_to_mds
 from splitter import split_markdown_documents_by_headers, smart_split_markdown_documents, post_process_markdowns
 from backend.helpers.tokenizer import count_tokens
 
-# print(scrape_results[6].html)
+print(scrape_results[6].html)
 
 # %%
 # markdowns_from_html = convert_htmls_to_markdowns(scrape_results)
@@ -160,9 +160,11 @@ for processed_md in processed_markdowns:
         if count_tokens(chunk.markdown) > 800:
             chunks_over_800_tokens += 1
         print(f"CHUNK: [{chunk.chunk}] | TOKENS: [{count_tokens(chunk.markdown)}]")
-        # print(f"{chunk.markdown}")
-        # print("-----------------------------------------------SPLIT-------------------------------------------------------")
-        # print()
-        # print()
+        print(f"{chunk.markdown}")
+        print("-----------------------------------------------SPLIT-------------------------------------------------------")
+        print()
+        print()
 
 print(f"Number of chunks over 800 tokens: {chunks_over_800_tokens}")
+
+# %%

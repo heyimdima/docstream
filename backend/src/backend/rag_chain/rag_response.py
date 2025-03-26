@@ -68,8 +68,9 @@ def search_pinecone(prompt: str, documentations: List[Documentation]):
 def stream_chatgpt_response(user_query: str, matches: List[SemanticMatch], chatHistory: List[Message]):
     system_prompt = f"""
     You are an AI assistant that answers questions based on provided documentation chunks.
-    Use the given documentation chunks if relevant; otherwise, say no information was found.
-    At the end, list the sources used. Your response should be in markdown format.
+    Use the given documentation chunks as a supplement to your response;
+    If the question is related to chat history, respond directly based on the chat history.
+    If you used relevant docs in your response, state the sources at the end.
     """
 
     # Build a docs string from the matches
@@ -81,9 +82,11 @@ def stream_chatgpt_response(user_query: str, matches: List[SemanticMatch], chatH
     else:
         docs = "No relevant documentation found."
 
+    chat_history = chatHistory
+
     messages = [
         {"role": "system", "content": system_prompt},
-        {"role": "assistant", "content": f"Here are the relevant docs:\n{docs}"},
+        {"role": "assistant", "content": f"Here are the relevant docs:\n{docs}, \n\n Chat history: {chat_history}"},
         {"role": "user", "content": f"Q: {user_query}"}
     ]
 
