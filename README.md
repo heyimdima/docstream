@@ -156,8 +156,6 @@ Compare responses with and without documentation context:
 
 **With Documentation**
 
-<img width="947" height="312" alt="docstream-response-2" src="https://github.com/user-attachments/assets/29cd0854-de3a-482f-94f6-b768d8f06399" />
-
 <img width="846" height="964" alt="docstream-response" src="https://github.com/user-attachments/assets/b36bbe0e-ecaf-42a2-b48a-185f5da3788f" />
 
 - Specific, accurate information about Next.js 15 features
