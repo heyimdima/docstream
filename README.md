@@ -146,12 +146,15 @@ The indexing pipeline transforms raw documentation into searchable vector embedd
 ### 1. RAG Without RAG
 Compare responses with and without documentation context:
 
-**Without Documentation** (Image 2: claude_example_without_rag.png)
+**Without Documentation**
+<img width="753" height="569" alt="claude_example_without_rag" src="https://github.com/user-attachments/assets/f5d363e3-ce1d-4083-992f-d9e8a3b6ec2d" />
 - Generic response about Next.js 15
 - No specific details or sources
 - Outdated knowledge cutoff
 
-**With Documentation** (Images 1, 4, 5, 6: Various docstream responses)
+**With Documentation**
+<img width="947" height="312" alt="docstream-response-2" src="https://github.com/user-attachments/assets/29cd0854-de3a-482f-94f6-b768d8f06399" />
+<img width="846" height="964" alt="docstream-response" src="https://github.com/user-attachments/assets/b36bbe0e-ecaf-42a2-b48a-185f5da3788f" />
 - Specific, accurate information about Next.js 15 features
 - Source URLs cited
 - Current information from official documentation
@@ -176,13 +179,16 @@ def smart_split_markdown_document(
 
 ### 3. Vector Search Implementation
 
-**Pinecone Index Configuration** (Image 7: embeddings-pinecone-1.png)
+**Pinecone Index Configuration**
+<img width="812" height="300" alt="embeddings-pinecone-1" src="https://github.com/user-attachments/assets/ba4bce80-4485-491e-bf33-ee51337a0afc" />
+
 - Metric: Cosine similarity
 - Dimensions: 3072 (text-embedding-3-large)
 - Dense vectors for fast similarity search
 - Namespaced by embedding_id for efficient multi-document search
 
-**Indexed Data Structure** (Image 8: embeddings-pinecone-2.png)
+**Indexed Data Structure**
+<img width="806" height="521" alt="embeddings-pinecone-2" src="https://github.com/user-attachments/assets/5974da0b-a215-4efa-af00-da8134c3bebc" />
 Each vector includes:
 - `chunk_index`: Position in original document
 - `content`: The actual text chunk
